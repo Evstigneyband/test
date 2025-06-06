@@ -1,0 +1,2399 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Твой Челлендж</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --dark: #1f2937;
+      --gray: #6b7280;
+      --light-gray: #f3f4f6;
+      --white: #ffffff;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: var(--dark);
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.05"><path d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/></g></g></svg>') repeat;
+      pointer-events: none;
+    }
+    
+    /* Auth Modal Styles */
+    .auth-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(5px);
+    }
+    
+    .auth-card {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 1.5rem;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.3s ease-out;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .auth-card h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    
+    .auth-subtitle {
+      color: var(--gray);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+    
+    .auth-input {
+      width: 100%;
+      padding: 1rem;
+      margin: 0.75rem 0;
+      border: 2px solid var(--light-gray);
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    
+    .auth-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    
+    .auth-button {
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+    
+    .auth-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    }
+    
+    .auth-button:disabled {
+      background: var(--gray);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .otp-inputs {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
+    
+    .otp-input {
+      width: 3rem;
+      height: 3.5rem;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 600;
+      border: 2px solid var(--light-gray);
+      border-radius: 0.75rem;
+      transition: all 0.2s;
+    }
+    
+    .otp-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    
+    .back-link:hover {
+      opacity: 0.8;
+    }
+    
+    .user-info {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      color: white;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: all 0.2s;
+    }
+    
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+    
+    h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(to right, #ffffff, #e0e7ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    
+    .subtitle {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.1rem;
+      font-weight: 300;
+      line-height: 1.5;
+    }
+    
+    .menu {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    
+    .menu-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .menu-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+    
+    .dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5rem;
+      background: white;
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+    
+    .dropdown.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+    
+    .dropdown button {
+      width: 100%;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .dropdown button:hover {
+      background: var(--light-gray);
+    }
+    
+    .dropdown button.home-btn {
+      color: var(--primary);
+      border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .dropdown button.stop-btn {
+      color: var(--danger);
+    }
+    
+    .main-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 1.5rem;
+      padding: 2.5rem;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 2rem;
+    }
+    
+    /* SVG Icons */
+    .icon {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+      fill: currentColor;
+    }
+    
+    .icon-home {
+      width: 1.2em;
+      height: 1.2em;
+    }
+    
+    .icon-stop {
+      width: 1.2em;
+      height: 1.2em;
+    }
+    
+    .icon-lock {
+      width: 1.5em;
+      height: 1.5em;
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.7;
+    }
+    
+    .icon-check {
+      width: 1.5em;
+      height: 1.5em;
+      color: var(--success);
+    }
+    
+    .icon-x {
+      width: 1.5em;
+      height: 1.5em;
+      color: var(--danger);
+    }
+    
+    .icon-close {
+      width: 0.875em;
+      height: 0.875em;
+    }
+    
+    .icon-drag {
+      width: 1.2em;
+      height: 1.2em;
+    }
+    
+    .setup-section {
+      display: block;
+    }
+    
+    .my-challenges {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      display: block;
+    }
+    
+    .my-challenges h3 {
+      color: var(--dark);
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    
+    .challenge-title {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid var(--light-gray);
+    }
+    
+    .challenge-title h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .challenge-duration {
+      font-size: 1rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+    
+    .challenges-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .challenge-item {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .challenge-item:hover {
+      background: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .challenge-info {
+      flex: 1;
+    }
+    
+    .challenge-name {
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.25rem;
+    }
+    
+    .challenge-meta {
+      font-size: 0.875rem;
+      color: var(--gray);
+    }
+    
+    .challenge-days {
+      text-align: center;
+      min-width: 80px;
+    }
+    
+    .no-challenges {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.7);
+      padding: 2rem;
+      font-style: italic;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--light-gray);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    
+    .form-input[type="number"] {
+      width: 120px;
+    }
+    
+    .goals-section {
+      margin-top: 2rem;
+    }
+    
+    .goals-section h3 {
+      margin-bottom: 1rem;
+      color: var(--dark);
+      font-weight: 600;
+    }
+    
+    .no-priority-section {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid var(--light-gray);
+    }
+    
+    .no-priority-goal {
+      background: var(--light-gray);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .no-priority-goal .goal-input {
+      width: 100%;
+      grid-column: 2;
+    }
+    
+    .checkbox-icon {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--gray);
+      border-radius: 0.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray);
+      flex-shrink: 0;
+    }
+    
+    .goal-item {
+      background: var(--light-gray);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      gap: 1rem;
+      align-items: center;
+      position: relative;
+      touch-action: pan-y;
+    }
+    
+    .goal-item.dragging {
+      opacity: 0.5;
+    }
+    
+    .goal-item.drag-over {
+      border-top: 3px solid var(--primary);
+    }
+    
+    .drag-handle {
+      cursor: grab;
+      font-size: 1.2rem;
+      color: var(--gray);
+      display: none;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+      text-align: center;
+      padding: 0.5rem 0;
+    }
+    
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+    
+    .goal-input {
+      grid-column: 2;
+      width: 100%;
+    }
+    
+    .hours-wrapper {
+      grid-column: 2;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .hours-input {
+      width: 80px;
+    }
+    
+    .remove-goal {
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .remove-goal:hover {
+      background: #dc2626;
+    }
+    
+    .remove-goal svg {
+      stroke: white;
+      stroke-width: 2;
+    }
+    
+    .add-goal-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-right: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .add-no-priority-btn {
+      background: var(--gray);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .add-goal-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    
+    .add-no-priority-btn:hover {
+      background: #4b5563;
+      transform: translateY(-1px);
+    }
+    
+    .total-hours {
+      background: var(--light-gray);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    .priority-info {
+      background: rgba(99, 102, 241, 0.1);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 1.5rem 0;
+      color: var(--primary-dark);
+      font-weight: 500;
+      text-align: center;
+    }
+    
+    .start-btn {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      padding: 1rem 3rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      display: block;
+      margin: 2rem auto 0;
+    }
+    
+    .start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    }
+    
+    .start-btn:disabled {
+      background: var(--gray);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .counter-section {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .days-counter {
+      font-size: 6rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .days-label {
+      font-size: 1.2rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+    
+    .today-date {
+      text-align: center;
+      color: var(--gray);
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+    
+    .activities-section {
+      display: none;
+    }
+    
+    .activities-grid {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .activity-card {
+      background: var(--light-gray);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .activity-card.locked {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    
+    .activity-card.locked::after {
+      content: '';
+    }
+    
+    .activity-card:hover:not(.locked) {
+      transform: translateX(5px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    .activity-name {
+      font-weight: 600;
+      color: var(--dark);
+    }
+    
+    .activity-goal {
+      background: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray);
+    }
+    
+    .activity-select {
+      background: white;
+      border: 2px solid transparent;
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      font-size: 1rem;
+      color: var(--dark);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-width: 80px;
+    }
+    
+    .activity-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    .activity-status {
+      font-size: 1.5rem;
+      width: 2rem;
+      text-align: center;
+    }
+    
+    .progress-section {
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border-radius: 1rem;
+      color: white;
+      margin-bottom: 2rem;
+    }
+    
+    .progress-percentage {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    
+    .progress-label {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    
+    .history-section {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    
+    .history-header {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+    }
+    
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+    
+    th {
+      background: var(--light-gray);
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--dark);
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    td {
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--light-gray);
+      font-size: 0.875rem;
+    }
+    
+    tr:hover td {
+      background: rgba(99, 102, 241, 0.05);
+    }
+    
+    .date-cell {
+      font-weight: 500;
+      color: var(--dark);
+    }
+    
+    .percent-cell {
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    tfoot td {
+      font-weight: 700;
+      padding: 1rem 0.75rem;
+      border-top: 2px solid var(--light-gray);
+      background: var(--light-gray);
+    }
+    
+    /* Mobile history styles */
+    .history-list {
+      display: none;
+    }
+    
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    
+    .history-date {
+      font-weight: 500;
+      color: var(--dark);
+    }
+    
+    .history-percent {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+    
+    .history-average {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: var(--light-gray);
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+    
+    .history-average-value {
+      color: var(--primary);
+      font-size: 1.2rem;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .auth-card {
+        padding: 2rem 1.5rem;
+      }
+      
+      .otp-input {
+        width: 2.5rem;
+        height: 3rem;
+        font-size: 1.25rem;
+      }
+      
+      .user-info {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
+      }
+      
+      .days-counter {
+        font-size: 4rem;
+      }
+      
+      .main-card {
+        padding: 1.5rem;
+      }
+      
+      .activity-card {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+      
+      .activity-card > * {
+        justify-self: stretch;
+      }
+      
+      .activity-goal {
+        text-align: center;
+      }
+      
+      .activity-select {
+        width: 100%;
+      }
+      
+      .activity-status {
+        justify-self: center;
+      }
+      
+      table {
+        font-size: 0.75rem;
+      }
+      
+      th, td {
+        padding: 0.5rem 0.25rem;
+      }
+      
+      .goal-item {
+        display: grid;
+        grid-template-columns: 30px 1fr 30px;
+        grid-template-rows: auto auto;
+        gap: 0.5rem;
+        align-items: center;
+        touch-action: manipulation;
+      }
+      
+      .goal-item .drag-handle {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        align-self: center;
+        padding: 0.5rem;
+        font-size: 1.5rem;
+      }
+      
+      .goal-item .goal-input {
+        grid-column: 2;
+        grid-row: 1;
+        width: 100%;
+        min-width: 0;
+      }
+      
+      .goal-item .hours-input {
+        grid-column: 2;
+        grid-row: 2;
+        width: 100px;
+      }
+      
+      .goal-item span {
+        grid-column: 2;
+        grid-row: 2;
+        margin-left: 110px;
+      }
+      
+      .goal-item .remove-goal {
+        grid-column: 3;
+        grid-row: 1 / 3;
+        align-self: center;
+        padding: 0.5rem 0.75rem;
+      }
+      
+      /* Mobile history table styles */
+      .table-wrapper {
+        display: none;
+      }
+      
+      .history-list {
+        display: block;
+      }
+      
+      /* Buttons layout on mobile */
+      .goals-section button {
+        width: 100%;
+        margin-right: 0;
+      }
+      
+      .add-goal-btn {
+        margin-bottom: 0.75rem;
+      }
+      
+      /* No priority goals mobile styles */
+      .no-priority-goal {
+        grid-template-columns: 30px 1fr 30px;
+        padding: 0.75rem;
+        gap: 0.75rem;
+      }
+      
+      .no-priority-goal .remove-goal {
+        width: 30px;
+        height: 30px;
+        padding: 0.25rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem 0.5rem;
+      }
+      
+      .main-card {
+        padding: 1rem;
+        border-radius: 1rem;
+      }
+      
+      th, td {
+        font-size: 0.65rem;
+        padding: 0.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Auth Modal -->
+  <div class="auth-modal" id="authModal" style="display: none;">
+    <div class="auth-card">
+      <!-- Email Step -->
+      <div id="emailStep">
+        <h2>Твой Челлендж</h2>
+        <p class="auth-subtitle">
+          Введите email для входа или регистрации
+        </p>
+        <input 
+          type="email" 
+          id="authEmailInput" 
+          class="auth-input" 
+          placeholder="your@email.com"
+          required
+        >
+        <button class="auth-button" id="sendCodeBtn" onclick="sendMagicLink()">
+          Получить код
+        </button>
+      </div>
+      
+      <!-- Code Step -->
+      <div id="codeStep" style="display: none;">
+        <h2>Введите код</h2>
+        <p class="auth-subtitle">
+          Мы отправили 6-значный код на<br>
+          <strong id="emailDisplay"></strong>
+        </p>
+        <div class="otp-inputs" id="otpInputs">
+          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+          <input type="text" class="otp-input" maxlength="1" pattern="[0-9]">
+        </div>
+        <button class="auth-button" id="verifyCodeBtn" onclick="verifyOtp()">
+          Войти
+        </button>
+        <a class="back-link" onclick="backToEmail()">
+          ← Изменить email
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="header">
+      <h1>Твой Челлендж</h1>
+      <p class="subtitle">Ставь цели и добивайся их.<br>Помни о силе маленьких шагов! Успехов!</p>
+      
+      <!-- User Info -->
+      <div class="user-info" id="userInfo" style="display: none;">
+        <span id="userEmail"></span>
+        <button class="logout-btn" onclick="logout()">Выйти</button>
+      </div>
+      
+      <div class="menu" id="menu" style="display: none;">
+        <button class="menu-btn" id="hamburger">☰</button>
+        <div class="dropdown" id="dropdown">
+          <button class="home-btn" id="homeBtn">
+            <svg class="icon icon-home" viewBox="0 0 24 24">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            Главная
+          </button>
+          <button class="stop-btn" id="stopBtn">
+            <svg class="icon icon-stop" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            Остановить челлендж
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- My Challenges List -->
+    <div class="my-challenges" id="myChallenges" style="display: none;">
+      <h2 class="history-header">Мои челленджи</h2>
+      <div class="challenges-list" id="challengesList"></div>
+    </div>
+    
+    <div class="main-card">
+      <!-- Setup Section -->
+      <div class="setup-section" id="setupSection">
+        <h2 class="history-header">Создать новый челлендж</h2>
+        
+        <div class="form-group">
+          <label class="form-label" for="challengeName">Название челленджа</label>
+          <input type="text" id="challengeName" class="form-input" placeholder="Например: Мой путь к успеху">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="challengeDays">Количество дней</label>
+          <input type="number" id="challengeDays" class="form-input" min="1" max="100" value="100">
+        </div>
+        
+        <div class="goals-section">
+          <h3 style="margin-bottom: 1rem;">Цели челленджа</h3>
+          <div id="goalsList"></div>
+          <div style="margin-top: 1rem; display: flex; flex-wrap: wrap;">
+            <button class="add-goal-btn" id="addGoalBtn">
+              <span>+</span> Добавить цель
+            </button>
+            <button class="add-no-priority-btn" id="addNoPriorityBtn">
+              <span>+</span> Цель без приоритета
+            </button>
+          </div>
+        </div>
+        
+        <div class="total-hours" id="totalHours">Всего часов в день: 0</div>
+        
+        <div class="priority-info" id="priorityInfo" style="display: none;">
+          Перетащите цели для изменения приоритета (сверху - самая важная)
+        </div>
+        
+        <button class="start-btn" id="startSetupBtn" disabled>Начать челлендж</button>
+      </div>
+      
+      <!-- Challenge Section -->
+      <div class="challenge-title" id="challengeTitle" style="display: none;">
+        <h2 id="challengeNameDisplay"></h2>
+        <div class="challenge-duration" id="challengeDuration"></div>
+      </div>
+      
+      <div class="counter-section" id="counterSection" style="display: none;">
+        <div class="days-counter" id="counter">0</div>
+        <div class="days-label">дней осталось</div>
+      </div>
+      
+      <div class="today-date" id="todayDate"></div>
+      
+      <div class="activities-section" id="challengeSection">
+        <div class="activities-grid" id="activities"></div>
+        
+        <div class="progress-section">
+          <div class="progress-percentage" id="percent">0%</div>
+          <div class="progress-label">выполнено сегодня</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="history-section" id="historySection" style="display: none;">
+      <h2 class="history-header">История выполнения</h2>
+      <div class="table-wrapper">
+        <table id="historyTbl"></table>
+      </div>
+      <div class="history-list"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const SUPABASE_URL = "https://kubjftkcofdibtcbcivt.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt1YmpmdGtjb2ZkaWJ0Y2JjaXZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgzODUyNzcsImV4cCI6MjA2Mzk2MTI3N30.pfljOMGLfRvhtnQ6D2tSgm_AMrOVwMja1uI3T6TTub8";
+    const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const DAY_MS = 86400000;
+    let currentUser = null;
+    let userEmail = '';
+    let state = {
+      id: null,
+      challengeName: '',
+      totalDays: 100,
+      goals: [],
+      startISO: null,
+      lastProcessedISO: null,
+      activities: {},
+      history: {}
+    };
+    
+    let setupGoals = [];
+    let setupNoPriorityGoals = [];
+    let draggedElement = null;
+
+    /* DOM refs */
+    const $ = id => document.getElementById(id);
+    const authModal = $("authModal");
+    const emailStep = $("emailStep");
+    const codeStep = $("codeStep");
+    const authEmailInput = $("authEmailInput");
+    const emailDisplay = $("emailDisplay");
+    const userInfo = $("userInfo");
+    const userEmailSpan = $("userEmail");
+    const setupSection = $("setupSection");
+    const challengeNameInput = $("challengeName");
+    const challengeDaysInput = $("challengeDays");
+    const goalsList = $("goalsList");
+    const addGoalBtn = $("addGoalBtn");
+    const totalHoursDiv = $("totalHours");
+    const priorityInfo = $("priorityInfo");
+    const startSetupBtn = $("startSetupBtn");
+    const counter = $("counter");
+    const hamburger = $("hamburger");
+    const dropdown = $("dropdown");
+    const menu = $("menu");
+    const percent = $("percent");
+    const todayLbl = $("todayDate");
+    const historyTbl = $("historyTbl");
+    const section = $("challengeSection");
+    const counterSection = $("counterSection");
+    const historySection = $("historySection");
+    const activitiesGrid = $("activities");
+    const stopBtn = $("stopBtn");
+    const homeBtn = $("homeBtn");
+    const myChallenges = $("myChallenges");
+    const challengesList = $("challengesList");
+    const challengeTitle = $("challengeTitle");
+    const challengeNameDisplay = $("challengeNameDisplay");
+    const challengeDuration = $("challengeDuration");
+
+    /* Auth Functions */
+    async function checkAuth() {
+      try {
+        const { data: { user } } = await sb.auth.getUser();
+        
+        if (!user) {
+          authModal.style.display = 'flex';
+          return false;
+        }
+        
+        currentUser = user;
+        userEmailSpan.textContent = user.email;
+        userInfo.style.display = 'flex';
+        authModal.style.display = 'none';
+        return true;
+      } catch (error) {
+        console.error('Auth check error:', error);
+        authModal.style.display = 'flex';
+        return false;
+      }
+    }
+    
+    async function sendMagicLink() {
+      const email = authEmailInput.value.trim();
+      if (!email) {
+        alert('Введите email');
+        return;
+      }
+      
+      userEmail = email;
+      const sendBtn = $('sendCodeBtn');
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Отправка...';
+      
+      try {
+        const { error } = await sb.auth.signInWithOtp({
+          email: email,
+          options: {
+            shouldCreateUser: true
+          }
+        });
+        
+        if (error) throw error;
+        
+        emailStep.style.display = 'none';
+        codeStep.style.display = 'block';
+        emailDisplay.textContent = email;
+        document.querySelector('.otp-input').focus();
+        
+      } catch (error) {
+        alert('Ошибка: ' + error.message);
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Получить код';
+      }
+    }
+    
+    async function verifyOtp() {
+      const inputs = document.querySelectorAll('.otp-input');
+      const code = Array.from(inputs).map(i => i.value).join('');
+      
+      if (code.length !== 6) {
+        alert('Введите полный код');
+        return;
+      }
+      
+      const verifyBtn = $('verifyCodeBtn');
+      verifyBtn.disabled = true;
+      verifyBtn.textContent = 'Проверка...';
+      
+      try {
+        const { error } = await sb.auth.verifyOtp({
+          email: userEmail,
+          token: code,
+          type: 'email'
+        });
+        
+        if (error) throw error;
+        
+        location.reload();
+        
+      } catch (error) {
+        alert('Неверный код');
+        inputs.forEach(i => i.value = '');
+        inputs[0].focus();
+      } finally {
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = 'Войти';
+      }
+    }
+    
+    function backToEmail() {
+      codeStep.style.display = 'none';
+      emailStep.style.display = 'block';
+      authEmailInput.value = userEmail;
+      authEmailInput.focus();
+    }
+    
+    async function logout() {
+      if (confirm('Вы уверены, что хотите выйти?')) {
+        await sb.auth.signOut();
+        localStorage.removeItem('lastChallengeName');
+        location.reload();
+      }
+    }
+    
+    // Setup OTP inputs auto-advance
+    document.addEventListener('DOMContentLoaded', () => {
+      const otpInputs = document.querySelectorAll('.otp-input');
+      
+      otpInputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+          e.target.value = e.target.value.replace(/[^0-9]/g, '');
+          
+          if (e.target.value && index < otpInputs.length - 1) {
+            otpInputs[index + 1].focus();
+          }
+          
+          const code = Array.from(otpInputs).map(i => i.value).join('');
+          if (code.length === 6) {
+            verifyOtp();
+          }
+        });
+        
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !e.target.value && index > 0) {
+            otpInputs[index - 1].focus();
+          }
+        });
+        
+        input.addEventListener('paste', (e) => {
+          e.preventDefault();
+          const pastedData = e.clipboardData.getData('text').slice(0, 6);
+          const digits = pastedData.split('');
+          
+          digits.forEach((digit, i) => {
+            if (otpInputs[index + i]) {
+              otpInputs[index + i].value = digit.replace(/[^0-9]/g, '');
+            }
+          });
+          
+          const nextEmpty = Array.from(otpInputs).findIndex(i => !i.value);
+          if (nextEmpty !== -1) {
+            otpInputs[nextEmpty].focus();
+          } else {
+            otpInputs[otpInputs.length - 1].focus();
+            verifyOtp();
+          }
+        });
+      });
+      
+      authEmailInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          sendMagicLink();
+        }
+      });
+    });
+
+    /* Date helpers */
+    function formatISO(d) {
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+    const todayISO = () => formatISO(new Date());
+    const diff = (from, to) => Math.floor((new Date(to) - new Date(from)) / DAY_MS);
+
+    /* Setup functions */
+    function addGoal(name = '', hours = 1) {
+      const goalId = Date.now();
+      setupGoals.push({ id: goalId, name, hours });
+      renderGoals();
+    }
+    
+    function addNoPriorityGoal(name = '') {
+      const goalId = Date.now() + Math.random();
+      setupNoPriorityGoals.push({ id: goalId, name, noPriority: true });
+      renderGoals();
+    }
+
+    function removeGoal(id) {
+      setupGoals = setupGoals.filter(g => g.id !== id);
+      renderGoals();
+    }
+    
+    function removeNoPriorityGoal(id) {
+      setupNoPriorityGoals = setupNoPriorityGoals.filter(g => g.id !== id);
+      renderGoals();
+    }
+
+    function renderGoals() {
+      let html = '';
+      
+      if (setupNoPriorityGoals.length > 0) {
+        html += '<div class="no-priority-section">';
+        html += '<h4 style="margin-bottom: 1rem; color: var(--gray);">Цели без приоритета</h4>';
+        
+        html += setupNoPriorityGoals.map(goal => `
+          <div class="no-priority-goal" data-id="${goal.id}">
+            <div class="checkbox-icon">
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <input type="text" class="form-input goal-input" value="${goal.name}" 
+                   placeholder="Название цели" data-id="${goal.id}" data-no-priority="true">
+            <button class="remove-goal" onclick="window.removeNoPriorityGoal(${goal.id})">
+              <svg class="icon icon-close" viewBox="0 0 24 24" fill="none">
+                <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        `).join('');
+        
+        html += '</div>';
+      }
+      
+      if (setupGoals.length > 0) {
+        html += '<h4 style="margin-bottom: 1rem; color: var(--gray);">Цели с приоритетом</h4>';
+      }
+      
+      html += setupGoals.map((goal, index) => `
+        <div class="goal-item" draggable="true" data-id="${goal.id}" style="grid-template-rows: ${window.innerWidth <= 768 ? 'auto auto' : 'auto'};">
+          <span class="drag-handle">
+            <svg class="icon icon-drag" viewBox="0 0 24 24">
+              <circle cx="12" cy="5" r="1"/>
+              <circle cx="6" cy="5" r="1"/>
+              <circle cx="18" cy="5" r="1"/>
+              <circle cx="12" cy="12" r="1"/>
+              <circle cx="6" cy="12" r="1"/>
+              <circle cx="18" cy="12" r="1"/>
+              <circle cx="12" cy="19" r="1"/>
+              <circle cx="6" cy="19" r="1"/>
+              <circle cx="18" cy="19" r="1"/>
+            </svg>
+          </span>
+          <input type="text" class="form-input goal-input" value="${goal.name}" 
+                 placeholder="Название цели" data-id="${goal.id}">
+          <div class="hours-wrapper">
+            <input type="number" class="form-input hours-input" value="${goal.hours}" 
+                   min="0.5" max="24" step="0.5" data-id="${goal.id}">
+            <span style="color: var(--gray);">ч/день</span>
+          </div>
+          <button class="remove-goal" onclick="window.removeGoal(${goal.id})">
+            <svg class="icon icon-close" viewBox="0 0 24 24" fill="none">
+              <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+      
+      goalsList.innerHTML = html;
+
+      updateTotalHours();
+      updateStartButton();
+      
+      if (setupGoals.length > 1) {
+        priorityInfo.style.display = 'block';
+        document.querySelectorAll('.drag-handle').forEach(el => el.style.display = 'block');
+        setupDragAndDrop();
+      } else {
+        priorityInfo.style.display = 'none';
+      }
+
+      document.querySelectorAll('.goal-input').forEach(input => {
+        input.addEventListener('input', e => {
+          if (e.target.dataset.noPriority) {
+            const goal = setupNoPriorityGoals.find(g => g.id == e.target.dataset.id);
+            if (goal) goal.name = e.target.value;
+          } else {
+            const goal = setupGoals.find(g => g.id == e.target.dataset.id);
+            if (goal) goal.name = e.target.value;
+          }
+          updateStartButton();
+        });
+      });
+
+      document.querySelectorAll('.hours-input').forEach(input => {
+        input.addEventListener('input', e => {
+          const goal = setupGoals.find(g => g.id == e.target.dataset.id);
+          if (goal) goal.hours = parseFloat(e.target.value) || 0;
+          updateTotalHours();
+        });
+      });
+    }
+
+    function setupDragAndDrop() {
+      const items = document.querySelectorAll('.goal-item');
+      
+      items.forEach(item => {
+        item.addEventListener('dragstart', e => {
+          draggedElement = item;
+          item.classList.add('dragging');
+        });
+
+        item.addEventListener('dragend', e => {
+          item.classList.remove('dragging');
+        });
+
+        item.addEventListener('dragover', e => {
+          e.preventDefault();
+          const afterElement = getDragAfterElement(goalsList, e.clientY);
+          if (afterElement == null) {
+            goalsList.appendChild(draggedElement);
+          } else {
+            goalsList.insertBefore(draggedElement, afterElement);
+          }
+        });
+        
+        let touchItem = null;
+        let touchOffset = { x: 0, y: 0 };
+        let placeholder = null;
+        
+        const handle = item.querySelector('.drag-handle');
+        
+        handle.addEventListener('touchstart', e => {
+          touchItem = item;
+          const touch = e.touches[0];
+          const rect = item.getBoundingClientRect();
+          touchOffset.x = touch.clientX - rect.left;
+          touchOffset.y = touch.clientY - rect.top;
+          
+          placeholder = document.createElement('div');
+          placeholder.className = 'goal-item placeholder';
+          placeholder.style.height = rect.height + 'px';
+          placeholder.style.opacity = '0.3';
+          placeholder.style.background = 'var(--primary)';
+          
+          const floatingCopy = item.cloneNode(true);
+          floatingCopy.style.position = 'fixed';
+          floatingCopy.style.zIndex = '1000';
+          floatingCopy.style.width = rect.width + 'px';
+          floatingCopy.style.left = rect.left + 'px';
+          floatingCopy.style.top = rect.top + 'px';
+          floatingCopy.style.opacity = '0.9';
+          floatingCopy.style.transform = 'scale(1.05)';
+          floatingCopy.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)';
+          floatingCopy.style.pointerEvents = 'none';
+          floatingCopy.classList.add('floating-item');
+          
+          document.body.appendChild(floatingCopy);
+          item.parentNode.insertBefore(placeholder, item);
+          item.style.display = 'none';
+          
+          touchItem.floatingCopy = floatingCopy;
+          
+          e.preventDefault();
+        });
+        
+        handle.addEventListener('touchmove', e => {
+          if (!touchItem || !touchItem.floatingCopy) return;
+          
+          const touch = e.touches[0];
+          touchItem.floatingCopy.style.left = (touch.clientX - touchOffset.x) + 'px';
+          touchItem.floatingCopy.style.top = (touch.clientY - touchOffset.y) + 'px';
+          
+          touchItem.floatingCopy.style.display = 'none';
+          const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+          touchItem.floatingCopy.style.display = '';
+          
+          const goalItemBelow = elementBelow?.closest('.goal-item:not(.placeholder):not(.floating-item)');
+          
+          if (goalItemBelow && goalItemBelow !== placeholder) {
+            const rect = goalItemBelow.getBoundingClientRect();
+            const middle = rect.top + rect.height / 2;
+            
+            if (touch.clientY < middle) {
+              goalItemBelow.parentNode.insertBefore(placeholder, goalItemBelow);
+            } else {
+              goalItemBelow.parentNode.insertBefore(placeholder, goalItemBelow.nextSibling);
+            }
+          }
+          
+          e.preventDefault();
+        });
+        
+        handle.addEventListener('touchend', e => {
+          if (!touchItem || !touchItem.floatingCopy) return;
+          
+          if (touchItem.floatingCopy) {
+            touchItem.floatingCopy.remove();
+          }
+          
+          touchItem.style.display = '';
+          
+          if (placeholder && placeholder.parentNode) {
+            placeholder.parentNode.insertBefore(touchItem, placeholder);
+            placeholder.remove();
+          }
+          
+          const newOrder = [];
+          document.querySelectorAll('.goal-item').forEach(item => {
+            const goalId = parseInt(item.dataset.id);
+            const goal = setupGoals.find(g => g.id === goalId);
+            if (goal) newOrder.push(goal);
+          });
+          setupGoals = newOrder;
+          
+          touchItem = null;
+          placeholder = null;
+          
+          e.preventDefault();
+        });
+      });
+    }
+
+    function getDragAfterElement(container, y) {
+      const draggableElements = [...container.querySelectorAll('.goal-item:not(.dragging)')];
+      
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    function updateTotalHours() {
+      const total = setupGoals.reduce((sum, goal) => sum + (goal.hours || 0), 0);
+      totalHoursDiv.textContent = `Всего часов в день: ${total}`;
+    }
+
+
+    /* Supabase functions */
+    async function loadAllChallenges() {
+      const { data, error } = await sb.from("challenge_state4")
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        console.error('Load challenges error:', error);
+        return [];
+      }
+      
+      return data || [];
+    }
+    
+    async function loadChallenge(challengeId) {
+      const { data, error } = await sb.from("challenge_state4")
+        .select('*')
+        .eq('id', challengeId)
+        .single();
+      
+      if (error) {
+        console.error('Load challenge error:', error);
+        return null;
+      }
+      
+      return data;
+    }
+    
+    async function loadExistingChallenge() {
+      const savedName = localStorage.getItem('lastChallengeName');
+      if (savedName) {
+        const { data, error } = await sb.from("challenge_state4")
+          .select('*')
+          .eq('challengeName', savedName)
+          .maybeSingle();
+        
+        if (data) {
+          state = data;
+          return true;
+        }
+      }
+      return false;
+    }
+
+    async function saveState() {
+      if (!state.id) return;
+      
+      const { error } = await sb.from("challenge_state4")
+        .update({
+          activities: state.activities,
+          history: state.history,
+          lastProcessedISO: state.lastProcessedISO
+        })
+        .eq('id', state.id);
+        
+      if (error) console.error('Save error:', error);
+    }
+
+    async function createNewChallenge() {
+      try {
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) {
+          alert('Необходимо войти в систему');
+          return;
+        }
+        
+        const allGoals = [];
+        
+        setupNoPriorityGoals.forEach((g, i) => {
+          allGoals.push({
+            name: g.name,
+            noPriority: true,
+            order: i
+          });
+        });
+        
+        const orderedGoals = [];
+        document.querySelectorAll('.goal-item').forEach(item => {
+          const goalId = parseInt(item.dataset.id);
+          const goal = setupGoals.find(g => g.id === goalId);
+          if (goal) orderedGoals.push(goal);
+        });
+        
+        orderedGoals.forEach((g, i) => {
+          allGoals.push({
+            name: g.name,
+            hours: g.hours,
+            priority: i + 1,
+            order: setupNoPriorityGoals.length + i
+          });
+        });
+
+        const newState = {
+          challengeName: challengeNameInput.value.trim(),
+          totalDays: parseInt(challengeDaysInput.value),
+          goals: allGoals,
+          startISO: todayISO(),
+          lastProcessedISO: todayISO(),
+          activities: {},
+          history: {},
+          user_id: user.id
+        };
+
+        let npIndex = 1;
+        let selIndex = 1;
+        allGoals.forEach(g => {
+          if (g.noPriority) {
+            newState.activities[`np${npIndex}`] = false;
+            npIndex++;
+          } else {
+            newState.activities[`sel${selIndex}`] = 0;
+            selIndex++;
+          }
+        });
+
+        console.log('Creating challenge with data:', newState);
+
+        const { data, error } = await sb.from("challenge_state4")
+          .insert(newState)
+          .select()
+          .single();
+
+        if (error) {
+          console.error('Create error details:', error);
+          alert(`Ошибка создания челленджа: ${error.message || error.details || 'Неизвестная ошибка'}`);
+          return;
+        }
+
+        if (!data) {
+          console.error('No data returned from insert');
+          alert('Ошибка: данные не были созданы');
+          return;
+        }
+
+        state = data;
+        localStorage.setItem('lastChallengeName', state.challengeName);
+        showChallenge();
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        alert(`Неожиданная ошибка: ${err.message}`);
+      }
+    }
+
+    /* Rollover */
+    async function ensureRollover() {
+      if (!state.startISO) return;
+      const today = todayISO();
+      if (state.lastProcessedISO === today) return;
+      
+      const yest = new Date();
+      yest.setHours(0, 0, 0, 0);
+      yest.setDate(yest.getDate() - 1);
+      const yesterday = formatISO(yest);
+      
+      state.history[yesterday] = { ...state.activities };
+      
+      Object.keys(state.activities).forEach(key => {
+        if (key.startsWith('np')) {
+          state.activities[key] = false;
+        } else {
+          state.activities[key] = 0;
+        }
+      });
+      
+      state.lastProcessedISO = today;
+      await saveState();
+    }
+
+    /* UI functions */
+    function showSetup() {
+      setupSection.style.display = 'block';
+      challengeTitle.style.display = 'none';
+      counterSection.style.display = 'none';
+      section.style.display = 'none';
+      menu.style.display = 'none';
+      historySection.style.display = 'none';
+      
+      loadAndShowChallenges();
+    }
+    
+    async function loadAndShowChallenges() {
+      const challenges = await loadAllChallenges();
+      
+      if (challenges.length > 0) {
+        myChallenges.style.display = 'block';
+        
+        challengesList.innerHTML = challenges.map(ch => {
+          const daysPassed = Math.max(0, diff(ch.startISO, todayISO()) + 1);
+          const totalGoals = ch.goals ? ch.goals.length : 0;
+          
+          return `
+            <div class="challenge-item" onclick="window.continueChallenge(${ch.id})">
+              <div class="challenge-info">
+                <div class="challenge-name">${ch.challengeName}</div>
+                <div class="challenge-meta">
+                  ${totalGoals} ${totalGoals === 1 ? 'цель' : totalGoals < 5 ? 'цели' : 'целей'} • 
+                  Начат ${new Date(ch.startISO).toLocaleDateString('ru-RU')}
+                </div>
+              </div>
+              <div class="challenge-days">
+                <div style="font-size: 1.5rem; font-weight: 600; color: var(--primary);">${daysPassed}</div>
+                <div style="font-size: 0.875rem; color: var(--gray);">из ${ch.totalDays}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        myChallenges.style.display = 'none';
+      }
+    }
+
+    function showChallenge() {
+      setupSection.style.display = 'none';
+      myChallenges.style.display = 'none';
+      challengeTitle.style.display = 'block';
+      counterSection.style.display = 'block';
+      section.style.display = 'block';
+      menu.style.display = 'block';
+      
+      challengeNameDisplay.textContent = state.challengeName;
+      const currentDay = diff(state.startISO, todayISO()) + 1;
+      challengeDuration.textContent = `День ${currentDay} из ${state.totalDays}`;
+      
+      renderChallenge();
+      renderHistory();
+    }
+
+    function renderChallenge() {
+      const today = new Date();
+      todayLbl.textContent = today.toLocaleDateString('ru-RU', { 
+        weekday: 'long', 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric' 
+      });
+
+      const daysLeft = Math.max(0, state.totalDays - diff(state.startISO, todayISO()));
+      counter.textContent = daysLeft;
+
+      const noPriorityGoals = state.goals.filter(g => g.noPriority);
+      const priorityGoals = state.goals.filter(g => !g.noPriority);
+
+      let activitiesHTML = '';
+      let npIndex = 1;
+      let selIndex = 1;
+      
+      if (noPriorityGoals.length > 0) {
+        noPriorityGoals.forEach((goal) => {
+          const isChecked = state.activities[`np${npIndex}`] || false;
+          activitiesHTML += `
+            <div class="activity-card">
+              <div class="activity-name">${goal.name}</div>
+              <div style="margin-left: auto;">
+                <label style="cursor: pointer;">
+                  <input type="checkbox" id="np${npIndex}" ${isChecked ? 'checked' : ''} 
+                         style="display: none;" onchange="window.toggleNoPriorityGoal(${npIndex - 1})">
+                  <div class="checkbox-icon" style="cursor: pointer;">
+                    ${isChecked ? `
+                      <svg class="icon" viewBox="0 0 24 24" fill="var(--success)">
+                        <rect x="3" y="3" width="18" height="18" rx="2" fill="var(--success)"/>
+                        <polyline points="7 12 10 15 17 8" stroke="white" stroke-width="2" fill="none"/>
+                      </svg>
+                    ` : `
+                      <svg class="icon" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                      </svg>
+                    `}
+                  </div>
+                </label>
+              </div>
+              <div class="activity-status" id="npst${npIndex}">
+                ${isChecked ? `
+                  <svg class="icon icon-check" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" fill="var(--success)"/>
+                    <polyline points="9 12 12 15 16 11" stroke="white" stroke-width="2" fill="none"/>
+                  </svg>
+                ` : `
+                  <svg class="icon icon-x" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" fill="var(--danger)"/>
+                    <path d="M15 9l-6 6M9 9l6 6" stroke="white" stroke-width="2"/>
+                  </svg>
+                `}
+              </div>
+            </div>
+          `;
+          npIndex++;
+        });
+        
+        if (priorityGoals.length > 0) {
+          activitiesHTML += '<div style="height: 1px; background: var(--light-gray); margin: 1.5rem 0;"></div>';
+        }
+      }
+      
+      priorityGoals.forEach((goal, i) => {
+        const isLocked = !canAccessGoal(i, priorityGoals);
+        activitiesHTML += `
+          <div class="activity-card ${isLocked ? 'locked' : ''}">
+            <div class="activity-name">${goal.name}</div>
+            <div class="activity-goal">${goal.hours} ч</div>
+            <select class="activity-select" id="sel${selIndex}" ${isLocked ? 'disabled' : ''}>
+              ${generateOptions(state.activities[`sel${selIndex}`] || 0)}
+            </select>
+            <div class="activity-status" id="st${selIndex}">${getStatusIcon(selIndex - 1, priorityGoals)}</div>
+            ${isLocked ? `<svg class="icon icon-lock" viewBox="0 0 24 24">
+              <rect x="5" y="11" width="14" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>` : ''}
+          </div>
+        `;
+        selIndex++;
+      });
+      
+      activitiesGrid.innerHTML = activitiesHTML;
+
+      priorityGoals.forEach((_, i) => {
+        const select = $(`sel${i + 1}`);
+        if (select && !select.disabled) {
+          select.onchange = async () => {
+            state.activities[`sel${i + 1}`] = parseFloat(select.value);
+            updateStatus();
+            await saveState();
+            renderChallenge();
+          };
+        }
+      });
+
+      updateStatus();
+    }
+
+    function canAccessGoal(index, priorityGoals) {
+      if (index === 0) return true;
+      
+      for (let i = 0; i < index; i++) {
+        const hours = state.activities[`sel${i + 1}`] || 0;
+        if (hours < priorityGoals[i].hours) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function generateOptions(selected) {
+      return Array.from({ length: 25 }, (_, i) => {
+        const value = i * 0.5;
+        return `<option value="${value}" ${value === selected ? 'selected' : ''}>${value} ч</option>`;
+      }).join('');
+    }
+
+    function getStatusIcon(index, priorityGoals) {
+      const hours = state.activities[`sel${index + 1}`] || 0;
+      const goal = priorityGoals[index];
+      return hours >= goal.hours 
+        ? `<svg class="icon icon-check" viewBox="0 0 24 24">
+             <circle cx="12" cy="12" r="10" fill="var(--success)"/>
+             <polyline points="9 12 12 15 16 11" stroke="white" stroke-width="2" fill="none"/>
+           </svg>`
+        : `<svg class="icon icon-x" viewBox="0 0 24 24">
+             <circle cx="12" cy="12" r="10" fill="var(--danger)"/>
+             <path d="M15 9l-6 6M9 9l6 6" stroke="white" stroke-width="2"/>
+           </svg>`;
+    }
+
+    function updateStatus() {
+      let done = 0;
+      let total = 0;
+      
+      const noPriorityGoals = state.goals.filter(g => g.noPriority);
+      const priorityGoals = state.goals.filter(g => !g.noPriority);
+      
+      let npIndex = 1;
+      noPriorityGoals.forEach(() => {
+        total++;
+        if (state.activities[`np${npIndex}`]) done++;
+        
+        const icon = $(`npst${npIndex}`);
+        if (icon) {
+          icon.innerHTML = state.activities[`np${npIndex}`]
+            ? `<svg class="icon icon-check" viewBox="0 0 24 24">
+                 <circle cx="12" cy="12" r="10" fill="var(--success)"/>
+                 <polyline points="9 12 12 15 16 11" stroke="white" stroke-width="2" fill="none"/>
+               </svg>`
+            : `<svg class="icon icon-x" viewBox="0 0 24 24">
+                 <circle cx="12" cy="12" r="10" fill="var(--danger)"/>
+                 <path d="M15 9l-6 6M9 9l6 6" stroke="white" stroke-width="2"/>
+               </svg>`;
+        }
+        npIndex++;
+      });
+      
+      let selIndex = 1;
+      priorityGoals.forEach((goal) => {
+        total++;
+        const hours = state.activities[`sel${selIndex}`] || 0;
+        const icon = $(`st${selIndex}`);
+        if (icon) {
+          icon.innerHTML = hours >= goal.hours 
+            ? `<svg class="icon icon-check" viewBox="0 0 24 24">
+                 <circle cx="12" cy="12" r="10" fill="var(--success)"/>
+                 <polyline points="9 12 12 15 16 11" stroke="white" stroke-width="2" fill="none"/>
+               </svg>`
+            : `<svg class="icon icon-x" viewBox="0 0 24 24">
+                 <circle cx="12" cy="12" r="10" fill="var(--danger)"/>
+                 <path d="M15 9l-6 6M9 9l6 6" stroke="white" stroke-width="2"/>
+               </svg>`;
+          if (hours >= goal.hours) done++;
+        }
+        selIndex++;
+      });
+      
+      percent.textContent = total > 0 ? Math.round(done / total * 100) + '%' : '0%';
+    }
+
+    function renderHistory() {
+      const days = Object.keys(state.history);
+      if (!days.length) {
+        historySection.style.display = 'none';
+        return;
+      }
+      
+      historySection.style.display = 'block';
+      
+      const isMobile = window.innerWidth <= 768;
+      
+      let totalPerc = 0;
+      const dayData = [];
+      
+      days.sort((a, b) => new Date(b) - new Date(a)).forEach(d => {
+        const row = state.history[d];
+        let done = 0;
+        let total = 0;
+        
+        const noPriorityGoals = state.goals.filter(g => g.noPriority);
+        const priorityGoals = state.goals.filter(g => !g.noPriority);
+        
+        let npIndex = 1;
+        noPriorityGoals.forEach(() => {
+          total++;
+          if (row[`np${npIndex}`]) done++;
+          npIndex++;
+        });
+        
+        let selIndex = 1;
+        priorityGoals.forEach((goal) => {
+          total++;
+          if ((row[`sel${selIndex}`] || 0) >= goal.hours) done++;
+          selIndex++;
+        });
+        
+        const perc = total > 0 ? Math.round(done / total * 100) : 0;
+        totalPerc += perc;
+        
+        const dateObj = new Date(d);
+        const formattedDate = dateObj.toLocaleDateString('ru-RU', { 
+          day: 'numeric', 
+          month: 'long' 
+        });
+        
+        dayData.push({ date: d, formattedDate, row, perc });
+      });
+      
+      const avg = Math.round(totalPerc / days.length * 10) / 10;
+      
+      if (isMobile) {
+        let html = `<div class="history-list">`;
+        
+        dayData.forEach(day => {
+          html += `
+            <div class="history-item">
+              <div class="history-date">${day.formattedDate}</div>
+              <div class="history-percent">${day.perc}%</div>
+            </div>
+          `;
+        });
+        
+        html += `
+          <div class="history-average">
+            <div>Средний процент</div>
+            <div class="history-average-value">${avg}%</div>
+          </div>
+        </div>`;
+        
+        historySection.innerHTML = `
+          <h2 class="history-header">История выполнения</h2>
+          ${html}
+        `;
+      } else {
+        let html = '<thead><tr><th>Дата</th>';
+        
+        state.goals.forEach(g => {
+          html += `<th>${g.name}</th>`;
+        });
+        
+        html += '<th>%</th></tr></thead><tbody>';
+        
+        dayData.forEach(day => {
+          html += `<tr><td class="date-cell">${day.formattedDate}</td>`;
+          
+          let npIndex = 1;
+          let selIndex = 1;
+          
+          state.goals.forEach((goal) => {
+            if (goal.noPriority) {
+              const isChecked = day.row[`np${npIndex}`] || false;
+              html += `<td style="text-align: center; color: ${isChecked ? 'var(--success)' : 'var(--gray)'}">
+                ${isChecked ? '✓' : '—'}
+              </td>`;
+              npIndex++;
+            } else {
+              const val = day.row[`sel${selIndex}`] || 0;
+              const isComplete = val >= goal.hours;
+              html += `<td style="color: ${isComplete ? 'var(--success)' : 'var(--gray)'}">${val}</td>`;
+              selIndex++;
+            }
+          });
+          
+          html += `<td class="percent-cell">${day.perc}%</td></tr>`;
+        });
+        
+        html += '</tbody>';
+        html += `<tfoot><tr><td colspan="${state.goals.length + 1}" style="text-align:right;">Средний процент</td>`;
+        html += `<td class="percent-cell">${avg}%</td></tr></tfoot>`;
+        
+        historySection.innerHTML = `
+          <h2 class="history-header">История выполнения</h2>
+          <div class="table-wrapper">
+            <table id="historyTbl">${html}</table>
+          </div>
+        `;
+      }
+    }
+
+    /* Event handlers */
+    challengeNameInput.addEventListener('input', updateStartButton);
+    addGoalBtn.addEventListener('click', () => addGoal());
+    
+    const addNoPriorityBtn = $("addNoPriorityBtn");
+    addNoPriorityBtn.addEventListener('click', () => addNoPriorityGoal());
+    
+    startSetupBtn.addEventListener('click', async () => {
+      if (!startSetupBtn.disabled) {
+        await createNewChallenge();
+      }
+    });
+
+    hamburger.onclick = () => dropdown.classList.toggle('show');
+    window.onclick = e => {
+      if (!menu.contains(e.target)) dropdown.classList.remove('show');
+    };
+    
+    homeBtn.onclick = () => {
+      dropdown.classList.remove('show');
+      if (state.challengeName) {
+        localStorage.setItem('lastChallengeName', state.challengeName);
+      }
+      challengeNameInput.value = '';
+      challengeDaysInput.value = '100';
+      setupGoals = [];
+      setupNoPriorityGoals = [];
+      addGoal('', 2);
+      showSetup();
+    };
+    
+    stopBtn.onclick = async () => {
+      if (confirm('Вы уверены, что хотите остановить челлендж?')) {
+        if (state.id) {
+          const { error } = await sb.from("challenge_state4").delete().eq('id', state.id);
+          if (error) console.error('Delete error:', error);
+        }
+        localStorage.removeItem('lastChallengeName');
+        location.reload();
+      }
+    };
+
+    // Make functions available globally
+    window.removeGoal = removeGoal;
+    window.removeNoPriorityGoal = removeNoPriorityGoal;
+    window.toggleNoPriorityGoal = async (index) => {
+      state.activities[`np${index + 1}`] = !state.activities[`np${index + 1}`];
+      await saveState();
+      renderChallenge();
+    };
+    window.continueChallenge = async (challengeId) => {
+      const challenge = await loadChallenge(challengeId);
+      if (challenge) {
+        state = challenge;
+        localStorage.setItem('lastChallengeName', state.challengeName);
+        await ensureRollover();
+        showChallenge();
+      }
+    };
+    window.sendMagicLink = sendMagicLink;
+    window.verifyOtp = verifyOtp;
+    window.backToEmail = backToEmail;
+    window.logout = logout;
+
+    /* Initialize */
+    async function init() {
+      const isAuthenticated = await checkAuth();
+      if (!isAuthenticated) {
+        return;
+      }
+      
+      const hasExisting = await loadExistingChallenge();
+      
+      if (hasExisting) {
+        await ensureRollover();
+        showChallenge();
+      } else {
+        showSetup();
+        setupGoals = [];
+        setupNoPriorityGoals = [];
+        addGoal('', 2);
+        loadAndShowChallenges();
+      }
+      
+      setInterval(async () => {
+        if (state.startISO) {
+          await ensureRollover();
+          renderChallenge();
+        }
+      }, 60000);
+      
+      document.addEventListener('visibilitychange', async () => {
+        if (!document.hidden && state.id) {
+          const freshData = await loadChallenge(state.id);
+          if (freshData) {
+            state = freshData;
+            await ensureRollover();
+            renderChallenge();
+            renderHistory();
+          }
+        }
+      });
+      
+      window.addEventListener('focus', async () => {
+        if (state.id) {
+          const freshData = await loadChallenge(state.id);
+          if (freshData) {
+            state = freshData;
+            await ensureRollover();
+            renderChallenge();
+            renderHistory();
+          }
+        }
+      });
+      
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (state.startISO && historySection.style.display !== 'none') {
+            renderHistory();
+          }
+        }, 250);
+      });
+    }
+
+    sb.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') {
+        location.reload();
+      } else if (event === 'SIGNED_OUT') {
+        location.reload();
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>
