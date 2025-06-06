@@ -1730,7 +1730,7 @@
 
     /* Supabase functions */
     async function loadAllChallenges() {
-      const { data, error } = await sb.from("challenge_state3")
+      const { data, error } = await sb.from("challenge_state4")
         .select('*')
         .order('created_at', { ascending: false });
       
@@ -1743,7 +1743,7 @@
     }
     
     async function loadChallenge(challengeId) {
-      const { data, error } = await sb.from("challenge_state3")
+      const { data, error } = await sb.from("challenge_state4")
         .select('*')
         .eq('id', challengeId)
         .single();
@@ -1759,7 +1759,7 @@
     async function loadExistingChallenge() {
       const savedName = localStorage.getItem('lastChallengeName');
       if (savedName) {
-        const { data, error } = await sb.from("challenge_state3")
+        const { data, error } = await sb.from("challenge_state4")
           .select('*')
           .eq('challengeName', savedName)
           .maybeSingle();
@@ -1775,7 +1775,7 @@
     async function saveState() {
       if (!state.id) return;
       
-      const { error } = await sb.from("challenge_state3")
+      const { error } = await sb.from("challenge_state4")
         .update({
           activities: state.activities,
           history: state.history,
@@ -1845,7 +1845,7 @@
 
         console.log('Creating challenge with data:', newState);
 
-        const { data, error } = await sb.from("challenge_state3")
+        const { data, error } = await sb.from("challenge_state4")
           .insert(newState)
           .select()
           .single();
@@ -2293,7 +2293,7 @@
     stopBtn.onclick = async () => {
       if (confirm('Вы уверены, что хотите остановить челлендж?')) {
         if (state.id) {
-          const { error } = await sb.from("challenge_state3").delete().eq('id', state.id);
+          const { error } = await sb.from("challenge_state4").delete().eq('id', state.id);
           if (error) console.error('Delete error:', error);
         }
         localStorage.removeItem('lastChallengeName');
